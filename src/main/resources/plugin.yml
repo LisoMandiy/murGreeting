@@ -11,3 +11,10 @@ commands:
   gmessages:
     description: Показывает/скрывает сообщение о входе/выходе
     usage: /gmessages <аргумент>
+permissions:
+  murgreeting.use:
+    description: Доступ к настройкам murGreeting
+    default: op
+  murgreeting.toggle:
+    description: Доступ к /gmessages
+    default: op
