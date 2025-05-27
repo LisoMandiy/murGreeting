@@ -1,0 +1,13 @@
+name: murGreeting
+version: '1.0-SNAPSHOT'
+main: dev.lisomandiy.murGreeting.MurGreeting
+api-version: '1.20'
+softdepend: [PlaceholderAPI]
+commands:
+  murgreeting:
+    description: Основная команда плагина murGreeting
+    usage: /murgreeting <подкоманда>
+    tab-completer: dev.lisomandiy.murGreeting.MurGreeting
+  gmessages:
+    description: Показывает/скрывает сообщение о входе/выходе
+    usage: /gmessages <аргумент>
