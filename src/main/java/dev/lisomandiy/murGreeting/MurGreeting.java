@@ -88,8 +88,18 @@ public final class MurGreeting extends JavaPlugin implements Listener, TabComple
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("murgreeting")) {
+
+            Player player = null;
+            if (sender instanceof Player) {
+                player = (Player) sender;
+                if (!hasPermission(player, "murgreeting.use")) {
+                    player.sendMessage("§cУ Вас нет прав на эту команду.");
+                    return true;
+                }
+            }
+
             if (args.length == 0) {
-                sender.sendMessage("§eИспользование: /murgreeting reload | editconfig <ключ> <значение>");
+                player.sendMessage("§eИспользование: /murgreeting reload | editconfig <ключ> <значение>");
                 return true;
             }
 
@@ -103,7 +113,10 @@ public final class MurGreeting extends JavaPlugin implements Listener, TabComple
                         .replace("&", "§").replace("\\n", "\n");
                 subtitleMessage = applyHexColors(config.getString("subtitle-message", ""))
                         .replace("&", "§").replace("\\n", "\n");
-
+                enableGreeting = config.getBoolean("enable-greeting", true);
+                enableTitle = config.getBoolean("enable-title", true);
+                enableSound = config.getBoolean("enable-sound", true);
+                enableChat = config.getBoolean("enable-chat", true);
                 showJoinQuit = config.getBoolean("show-default-join-message", true);
 
                 String soundName = config.getString("sound", "ENTITY_PLAYER_LEVELUP");
@@ -113,18 +126,18 @@ public final class MurGreeting extends JavaPlugin implements Listener, TabComple
                     try {
                         joinSound = Sound.valueOf(soundName.toUpperCase());
                     } catch (IllegalArgumentException e) {
-                        sender.sendMessage("§cНеверный звук в конфиге: " + soundName);
+                        player.sendMessage("§cНеверный звук в конфиге: " + soundName);
                         joinSound = null;
                     }
                 }
 
-                sender.sendMessage("§aКонфигурация перезагружена.");
+                player.sendMessage("§aКонфигурация перезагружена.");
                 return true;
             }
 
             if (args[0].equalsIgnoreCase("editconfig")) {
                 if (args.length < 3) {
-                    sender.sendMessage("§cИспользование: /murgreeting editconfig <ключ> <значение>");
+                    player.sendMessage("§cИспользование: /murgreeting editconfig <ключ> <значение>");
                     return true;
                 }
 
@@ -133,10 +146,10 @@ public final class MurGreeting extends JavaPlugin implements Listener, TabComple
                 FileConfiguration config = getConfig();
 
                 List<String> validKeys = Arrays.asList("join-message", "title-message", "subtitle-message",
-                        "show-default-join-message", "sound");
+                        "show-default-join-message", "enable-greeting", "enable-title", "enable-sound", "enable-chat", "sound");
 
                 if (!validKeys.contains(key)) {
-                    sender.sendMessage("§cНедопустимый ключ. Доступные: " + String.join(", ", validKeys));
+                    player.sendMessage("§cНедопустимый ключ. Возможные: " + String.join(", ", validKeys));
                     return true;
                 }
 
@@ -148,19 +161,29 @@ public final class MurGreeting extends JavaPlugin implements Listener, TabComple
                 }
 
                 saveConfig();
-                sender.sendMessage("§aКлюч '" + key + "' обновлён.");
+                player.sendMessage("§aКлюч '" + key + "' обновлён. Не забудьте /murgreeting reload.");
                 return true;
             }
 
-            sender.sendMessage("§cНеизвестный аргумент.");
+            player.sendMessage("§cНеизвестный аргумент.");
             return true;
         }
 
         if (command.getName().equalsIgnoreCase("gmessages")) {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage("§cЭту команду можно выполнять только в игре.");
+                return true;
+            }
+
+            if (!hasPermission(player, "murgreeting.toggle")) {
+                player.sendMessage("§cУ Вас нет прав на эту команду.");
+                return true;
+            }
+
             showJoinQuit = !showJoinQuit;
             getConfig().set("show-default-join-message", showJoinQuit);
             saveConfig();
-            sender.sendMessage("§7Системное сообщение входа теперь: " +
+            player.sendMessage("§7Системное сообщение входа теперь: " +
                     (showJoinQuit ? "§aвключено" : "§cотключено"));
             return true;
         }
@@ -224,4 +247,9 @@ public final class MurGreeting extends JavaPlugin implements Listener, TabComple
         return text;
     }
 
+    private boolean hasPermission(Player player, String permission) {
+        if (Bukkit.getPluginManager().isPluginEnabled("LuckPerms")) {
+            return player.hasPermission(permission);
+        } return player.isOp();
+    }
 }
