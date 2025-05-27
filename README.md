@@ -42,4 +42,3 @@ title-message: '&aДобро пожаловать'
 subtitle-message: '&7на сервер'
 sound: 'ENTITY_PLAYER_LEVELUP'
 show-default-join-message: false
-"# murGreeting" 
