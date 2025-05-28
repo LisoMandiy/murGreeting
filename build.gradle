@@ -33,9 +33,3 @@ java {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
-
-tasks.register('deployPlugin', Copy) {
-    dependsOn build
-    from "$buildDir/libs/${project.name}-${project.version}.jar"
-    into "C:/Users/LisoMandiy/Desktop/MUREX/mcserver/plugins"
-}
