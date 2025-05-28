@@ -23,12 +23,6 @@ public final class MurGreeting extends JavaPlugin implements Listener, TabComple
     private String subtitleMessage = "";
     private Sound joinSound = null;
 
-    private boolean showJoinQuit = true;
-    private boolean enableGreeting = true;
-    private boolean enableTitle = true;
-    private boolean enableSound = true;
-    private boolean enableChat = true;
-
     @Override
     public void onEnable() {
         saveDefaultConfig();
