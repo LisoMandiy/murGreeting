@@ -23,6 +23,12 @@ public final class MurGreeting extends JavaPlugin implements Listener, TabComple
     private String subtitleMessage = "";
     private Sound joinSound = null;
 
+    private boolean showJoinQuit = true;
+    private boolean enableGreeting = true;
+    private boolean enableTitle = true;
+    private boolean enableSound = true;
+    private boolean enableChat = true;
+
     @Override
     public void onEnable() {
         saveDefaultConfig();
@@ -107,10 +113,6 @@ public final class MurGreeting extends JavaPlugin implements Listener, TabComple
                         .replace("&", "§").replace("\\n", "\n");
                 subtitleMessage = applyHexColors(config.getString("subtitle-message", ""))
                         .replace("&", "§").replace("\\n", "\n");
-                enableGreeting = config.getBoolean("enable-greeting", true);
-                enableTitle = config.getBoolean("enable-title", true);
-                enableSound = config.getBoolean("enable-sound", true);
-                enableChat = config.getBoolean("enable-chat", true);
                 showJoinQuit = config.getBoolean("show-default-join-message", true);
 
                 String soundName = config.getString("sound", "ENTITY_PLAYER_LEVELUP");
@@ -140,14 +142,14 @@ public final class MurGreeting extends JavaPlugin implements Listener, TabComple
                 FileConfiguration config = getConfig();
 
                 List<String> validKeys = Arrays.asList("join-message", "title-message", "subtitle-message",
-                        "show-default-join-message", "enable-greeting", "enable-title", "enable-sound", "enable-chat", "sound");
+                        "show-default-join-message", "sound");
 
                 if (!validKeys.contains(key)) {
                     player.sendMessage("§cНедопустимый ключ. Возможные: " + String.join(", ", validKeys));
                     return true;
                 }
 
-                if (key.startsWith("enable-") || key.equals("show-default-join-message")) {
+                if (key.equals("show-default-join-message")) {
                     boolean boolValue = value.equalsIgnoreCase("true") || value.equalsIgnoreCase("yes");
                     config.set(key, boolValue);
                 } else {
