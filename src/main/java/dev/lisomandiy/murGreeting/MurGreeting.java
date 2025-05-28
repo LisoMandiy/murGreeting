@@ -166,14 +166,13 @@ public final class MurGreeting extends JavaPlugin implements Listener, TabComple
         }
 
         if (command.getName().equalsIgnoreCase("gmessages")) {
-            if (!(sender instanceof Player player)) {
-                sender.sendMessage("§cЭту команду можно выполнять только в игре.");
-                return true;
-            }
-
-            if (!hasPermission(player, "murgreeting.toggle")) {
-                player.sendMessage("§cУ Вас нет прав на эту команду.");
-                return true;
+            Player player = null;
+            if (sender instanceof Player) {
+                player = (Player) sender;
+                if (!hasPermission(player, "murgreeting.use")) {
+                    player.sendMessage("§cУ Вас нет прав на эту команду.");
+                    return true;
+                }
             }
 
             showJoinQuit = !showJoinQuit;
